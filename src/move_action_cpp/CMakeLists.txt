@@ -8,13 +8,14 @@ endif()
 # find dependencies
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(moveit_ros_planning_interface REQUIRED)
 find_package(rclcpp_action REQUIRED)
 find_package(custom_interfaces REQUIRED)
 find_package(visualization_msgs REQUIRED)
 
 add_executable(move_action_client src/move_action_client.cpp)
 ament_target_dependencies(move_action_client
-  rclcpp rclcpp_action custom_interfaces visualization_msgs
+  rclcpp rclcpp_action custom_interfaces visualization_msgs moveit_ros_planning_interface
 )
 
 add_executable(move_action_server
@@ -27,13 +28,27 @@ ament_target_dependencies(move_action_server
   custom_interfaces
 )
 
+add_executable(moveit_pose_test
+  src/moveit_pose_test.cpp
+)
+
+ament_target_dependencies(moveit_pose_test
+  rclcpp
+  moveit_ros_planning_interface
+)
+
 install(TARGETS
   move_action_client
   move_action_server
+  moveit_pose_test
   DESTINATION lib/${PROJECT_NAME}
 )
 
-install(DIRECTORY config DESTINATION share/${PROJECT_NAME})
+install(DIRECTORY 
+  config 
+  launch
+  DESTINATION share/${PROJECT_NAME}
+)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
